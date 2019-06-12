@@ -1,11 +1,12 @@
-from conans import ConanFile, CMake, tools
+from conans import ConanFile, CMake
 
 
 class SymEngineConan(ConanFile):
     name = "SymEngine"
     version = "0.4.0"
     license = "MIT"
-    url = "https://github.com/symengine/symengine"
+    homepage = "https://github.com/symengine/symengine/"
+    url = "https://github.com/torshind/conan-symengine/"
     description = "Fast symbolic manipulation library"
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False]}
@@ -14,8 +15,9 @@ class SymEngineConan(ConanFile):
     exports_sources = "*"
 
     def source(self):
-        git = tools.Git()
-        git.clone("https://github.com/symengine/symengine.git", "v" + self.version)
+        self.run("git clone --branch v"
+                 + self.version
+                 + " https://github.com/symengine/symengine.git")
 
     def build(self):
         pass
@@ -24,7 +26,7 @@ class SymEngineConan(ConanFile):
         cmake = CMake(self)
         cmake.definitions["INTEGER_CLASS"] = "boostmp"
         cmake.definitions["BUILD_TESTS"] = "OFF"
-        cmake.configure()
+        cmake.configure(source_folder="symengine")
         cmake.install()
 
     def package_info(self):
